@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Web.RazorPages01.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,7 +12,13 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true;
 });
 
+builder.Services.AddDbContext<AppDataContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("AppConnection")
+                                 ?? throw new InvalidOperationException("Connection string not found. Have you added the connection string to your appsettings.json?")));
+
 var app = builder.Build();
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
