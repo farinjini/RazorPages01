@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Web.RazorPages01.Data;
+using Web.RazorPages01.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,14 @@ builder.Services.AddDbContext<AppDataContext>(
 var app = builder.Build();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+//Run the Movie seeder
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    SeedMovies.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
