@@ -36,11 +36,20 @@ namespace Web.RazorPages01.Pages.Movies
             if (_context.Movies != null)
             {
                 var movies = _context.Movies.AsQueryable();
+
+                var genres = _context.Movies.OrderBy(a => a.Genre).Select(b => b.Genre).AsQueryable();
                 
                 if (!string.IsNullOrEmpty(SearchString))
                 {
                     movies = movies.Where(s => s.Title.Contains(SearchString.ToLower()));
                 }
+
+                if (!string.IsNullOrEmpty(MovieGenre))
+                {
+                    movies = movies.Where(c => c.Genre == MovieGenre);
+                }
+
+                Genres = new SelectList(await genres.Distinct().ToListAsync());
                 
                 Movie = await movies.ToListAsync();
             }
